@@ -11,7 +11,7 @@
 | --- | --- |
 | Nadia Kirana Afifah | 5027241005 |
 | Clarissa Aydin Rahmazea | 5027241014 |
-| Ananda Widi Alrafi | 5027241067 |
+| Ananda Widi Alrafi | 5027241076 |
 
 ## Latar belakang
 
@@ -118,4 +118,21 @@ Proyek ini adalah **simulasi untuk pembelajaran**, bukan sistem produksi.
 ## Teknologi
 
 HTML, CSS, dan JavaScript murni (tanpa framework dan tanpa library). Python hanya dipakai opsional untuk server lokal pada `run.py`.
+
+## Dokumentasi
+
+- Menu daftar psikolog
+<img width="918" height="567" alt="image" src="https://github.com/user-attachments/assets/00cd5d80-7f9e-448e-93c3-a2c5395f8547" />
+
+- Menu menulis cerita bagi mahasiswa
+<img width="926" height="560" alt="image" src="https://github.com/user-attachments/assets/39db8328-5c14-4754-9d89-7352fbae7e4c" />
+
+- Kotak masuk sebagai psikolog
+<img width="918" height="562" alt="image" src="https://github.com/user-attachments/assets/f24ddc33-6a21-4d78-990a-b234407a36fd" />
+
+- Menguji kerahasiaan (kunci yang sesuai)
+<img width="722" height="295" alt="image" src="https://github.com/user-attachments/assets/2407d70c-c143-4e0f-bdc6-33fa523dc631" />
+
+- Menguji kerahasiaan (kunci tidak sesuai)
+<img width="669" height="263" alt="image" src="https://github.com/user-attachments/assets/78460af1-a978-4565-8216-4b297af20848" />
 
