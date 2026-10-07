@@ -11,7 +11,7 @@
 | --- | --- |
 | Nadia Kirana Afifah | 5027241005 |
 | Clarissa Aydin Rahmazea | 5027241014 |
-| Ananda Widi Alrafi | 5027241076 |
+| Ananda Widi Alrafi | 5027241067 |
 
 ## Latar belakang
 
