@@ -1,10 +1,17 @@
 # SafeTalk
 
-**Aplikasi konsultasi psikologis mahasiswa dengan enkripsi RSA**
 
-Tugas ETS Kriptografi, Studi Kasus 2: Implementasi algoritma RSA.
+## **Aplikasi konsultasi psikologis mahasiswa dengan enkripsi RSA**
 
-SafeTalk adalah aplikasi web sederhana tempat mahasiswa bisa menceritakan masalahnya kepada psikolog kampus. Isi cerita dikunci dengan RSA sebelum dikirim, sehingga hanya psikolog yang dituju (dan penulis ceritanya sendiri) yang bisa membacanya. Algoritma RSA ditulis sendiri dari nol **tanpa library atau framework kriptografi**.
+**SafeTalk** adalah aplikasi web sederhana tempat mahasiswa bisa menceritakan masalahnya kepada psikolog kampus. Isi cerita dikunci dengan RSA sebelum dikirim, sehingga hanya psikolog yang dituju (dan penulis ceritanya sendiri) yang bisa membacanya. Algoritma RSA ditulis sendiri dari nol **tanpa library atau framework kriptografi**.
+
+## Kelompok 15
+
+| Nama | NRP |
+| --- | --- |
+| Nadia Kirana Afifah | 5027241005 |
+| Clarissa Aydin Rahmazea | 5027241014 |
+| Ananda Widi Alrafi | 5027241076 |
 
 ## Latar belakang
 
@@ -14,14 +21,14 @@ Banyak yang ragu mencari bantuan karena takut cerita pribadi atau identitasnya d
 
 ## Fitur
 
-- **Banyak psikolog, kunci masing-masing.** Setiap psikolog yang diaktifkan memiliki pasangan kunci RSA 1024 bit sendiri.
-- **Cerita dikunci untuk satu psikolog.** Mahasiswa memilih psikolog tujuan, dan hanya kunci privat psikolog itu yang bisa membukanya. Psikolog lain tidak bisa.
-- **Nama samaran.** Mahasiswa bebas memakai nama panggilan atau nama samaran.
-- **Cerita saya.** Penulis bisa membaca ulang ceritanya sendiri lewat salinan yang dienkripsi dengan kunci miliknya.
-- **Kotak masuk per psikolog.** Setiap psikolog hanya melihat cerita yang ditujukan kepadanya.
-- **Uji kerahasiaan.** Fitur untuk mencoba membuka paksa sebuah cerita dengan kunci psikolog lain. Hasilnya gagal, dan itu membuktikan kerahasiaan berasal dari enkripsi, bukan sekadar filter tampilan.
-- **Lihat data di server.** Pengguna bisa melihat bahwa yang tersimpan dan terkirim hanyalah teks acak (ciphertext).
-- **Teks asli tidak disimpan.** Setelah dibuka, teks asli hanya ada di memori halaman. Yang tersimpan tetap ciphertext.
+- **Banyak psikolog, kunci masing-masing:** Setiap psikolog yang diaktifkan memiliki pasangan kunci RSA 1024 bit sendiri.
+- **Cerita dikunci untuk satu psikolog:** Mahasiswa memilih psikolog tujuan, dan hanya kunci privat psikolog itu yang bisa membukanya. Psikolog lain tidak bisa.
+- **Nama samaran:** Mahasiswa bebas memakai nama panggilan atau nama samaran.
+- **Cerita saya:** Penulis bisa membaca ulang ceritanya sendiri lewat salinan yang dienkripsi dengan kunci miliknya.
+- **Kotak masuk per psikolog:** Setiap psikolog hanya melihat cerita yang ditujukan kepadanya.
+- **Uji kerahasiaan:** Fitur untuk mencoba membuka paksa sebuah cerita dengan kunci psikolog lain. Hasilnya gagal, dan itu membuktikan kerahasiaan berasal dari enkripsi, bukan sekadar filter tampilan.
+- **Lihat data di server:** Pengguna bisa melihat bahwa yang tersimpan dan terkirim hanyalah teks acak (ciphertext).
+- **Teks asli tidak disimpan:** Setelah dibuka, teks asli hanya ada di memori halaman. Yang tersimpan tetap ciphertext.
 
 ## Cara kerja
 
@@ -86,7 +93,7 @@ Klik dua kali `jalankan.bat`. Hasilnya sama dengan Cara 2.
 4. Masih di **Kotak masuk**, gunakan **Uji kerahasiaan**: pilih sebuah cerita, pilih kunci psikolog yang bukan tujuannya, lalu klik **Coba buka**. Hasilnya gagal.
 5. Klik **Hapus semua data demo** untuk mengulang dari awal.
 
-## Struktur berkas
+## Struktur Repository
 
 ```
 SafeTalk/
@@ -112,11 +119,3 @@ Proyek ini adalah **simulasi untuk pembelajaran**, bukan sistem produksi.
 
 HTML, CSS, dan JavaScript murni (tanpa framework dan tanpa library). Python hanya dipakai opsional untuk server lokal pada `run.py`.
 
-## Tim
-
-**Kelompok X**
-
-| Nama | NRP |
-| --- | --- |
-| (isi nama anggota 1) | (isi NRP) |
-| (isi nama anggota 2) | (isi NRP) |
