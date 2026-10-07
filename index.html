@@ -57,6 +57,16 @@ ol.steps code{display:block;margin-top:3px;font-family:ui-monospace,Menlo,Consol
 .msg{border:1px solid var(--line);border-radius:10px;padding:14px;margin-top:12px}
 .msg .meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:8px}
 .msg .meta span{color:var(--muted);font-size:.85rem}
+.chat-list{display:grid;gap:12px}
+.chat-bubble{display:block;max-width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);word-break:break-word;white-space:pre-wrap}
+.chat-encrypted{background:var(--plum-soft);border-left:4px solid var(--plum);color:var(--ink)}
+.chat-open{background:var(--teal-soft);border-left:4px solid var(--teal);color:var(--ink)}
+.chat-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+button.small{margin-top:0;padding:8px 12px;font-size:.9rem}
+.rsa-demo{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
+.rsa-step{background:var(--code);padding:12px;border:1px solid var(--line);border-radius:10px}
+.rsa-step h3{font-size:1rem;margin-bottom:6px}
+.rsa-step code{display:block;white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.8rem;background:transparent}
 .empty{color:var(--muted);padding:8px 0}
 .err{color:var(--warn);font-weight:600;margin-top:10px}
 details{margin-top:6px}summary{cursor:pointer;color:var(--muted);font-size:.9rem;margin-bottom:6px}
@@ -88,6 +98,12 @@ footer{max-width:980px;margin:0 auto;padding:0 20px 30px;color:var(--muted);font
   <div class="card" id="keyOut" hidden>
     <h2>Psikolog aktif</h2>
     <div id="psyList"></div>
+  </div>
+  <div class="card">
+    <h2>Tahapan RSA yang dipakai</h2>
+    <p class="hint">Semua proses dibuat manual tanpa library atau framework. Ini menampilkan alur RSA dari pembangkitan kunci sampai enkripsi dan dekripsi.</p>
+    <button class="act" id="rsaDemoBtn">Jalankan demo RSA</button>
+    <div id="rsaDemoOut" class="rsa-demo" style="display:none"></div>
   </div>
 </section>
 
@@ -235,6 +251,28 @@ function refresh() {
   $("psyList").innerHTML = PSY.map(p => `<div class="msg"><b>${esc(p.name)}</b> <span class="tag pub">Enkripsi RSA aktif</span><span class="tag priv">Kunci privat hanya milik ${esc(p.name)}</span></div>`).join("");
   renderMine(); renderInbox();
 }
+function renderRsaDemo() {
+  const key = genKeys(512);
+  const m = 123456789n;
+  const c = modPow(m, key.e, key.n);
+  const decrypted = modPow(c, key.d, key.n);
+  const out = `
+    <div class="rsa-step"><h3>1. Pembangkitan kunci</h3><code>p = ${key.p}
+q = ${key.q}
+n = p × q = ${key.n}
+phi = (p - 1)(q - 1) = ${key.phi}
+e = ${key.e}
+d = e⁻¹ mod phi = ${key.d}</code></div>
+    <div class="rsa-step"><h3>2. Enkripsi</h3><code>Plaintext (m) = ${m}
+c = m^e mod n = ${c}</code></div>
+    <div class="rsa-step"><h3>3. Dekripsi</h3><code>m = c^d mod n = ${decrypted}
+Hasilnya sama dengan pesan awal: ${decrypted === m ? "valid" : "tidak valid"}</code></div>
+    <div class="rsa-step"><h3>4. Kesimpulan</h3><code>RSA bekerja karena pasangan kunci publik (n, e) dan kunci privat (n, d) saling terkait.
+Kunci privat tidak dapat digunakan untuk menebak kunci publik, sehingga komunikasi tetap rahasia.</code></div>
+  `;
+  $("rsaDemoOut").innerHTML = out;
+  $("rsaDemoOut").style.display = "grid";
+}
 function renderMine() {
   $("mine").innerHTML = MSGS.length ? MSGS.map(m => {
     let txt; try { txt = decrypt(m.cs, ME); } catch (e) { txt = "[tidak dapat dibuka]"; }
@@ -245,16 +283,19 @@ function renderInbox() {
   const box = $("inbox"), who = $("who").value, list = MSGS.filter(m => m.to === who);
   if (!PSY.length) { box.innerHTML = `<div class="empty">Belum ada psikolog aktif.</div>`; return; }
   if (!list.length) { box.innerHTML = `<div class="empty">Belum ada cerita untuk ${esc(psyName(who))}.</div>`; return; }
+  box.className = "chat-list";
   box.innerHTML = list.map(m => `
     <div class="msg">
       <div class="meta"><b>${esc(m.alias)} <span>- ${esc(m.topic)}</span></b><span>${esc(m.time)}</span></div>
-      ${OPEN[m.id] != null ? `<div class="plain">${esc(OPEN[m.id])}</div>`
-      : `<p class="lock">Pesan terenkripsi</p>
-         <details><summary>Lihat data terenkripsi</summary><div class="cipher">${esc(m.cr.slice(0, 220))}${m.cr.length > 220 ? "..." : ""}</div></details>
-         <button class="act" data-id="${m.id}">Buka pesan</button><div class="err" id="e${m.id}" role="alert"></div>`}
+      ${OPEN[m.id] != null ? `<div class="chat-bubble chat-open">${esc(OPEN[m.id])}</div>
+        <div class="chat-actions"><button class="ghost small" data-id="${m.id}" data-action="close">Kembali ke bentuk terenkripsi</button></div>`
+      : `<div class="chat-bubble chat-encrypted">${esc(m.cr.slice(0, 220))}${m.cr.length > 220 ? "..." : ""}</div>
+        <div class="chat-actions"><button class="act small" data-id="${m.id}" data-action="open">Buka pesan</button></div>
+        <div class="err" id="e${m.id}" role="alert"></div>`}
     </div>`).join("");
-  box.querySelectorAll("button.act").forEach(b => b.addEventListener("click", () => {
+  box.querySelectorAll("button[data-action]").forEach(b => b.addEventListener("click", () => {
     const m = MSGS.find(x => String(x.id) === b.dataset.id);
+    if (b.dataset.action === "close") { delete OPEN[m.id]; renderInbox(); return; }
     try { OPEN[m.id] = decrypt(m.cr, PSY.find(p => p.id === who)); renderInbox(); }
     catch (e) { $("e" + m.id).textContent = "Pesan tidak bisa dibuka dengan akun ini."; }
   }));
@@ -267,6 +308,7 @@ function showTab(id) {
 }
 $("who").addEventListener("change", renderInbox);
 
+$("rsaDemoBtn").addEventListener("click", renderRsaDemo);
 $("genBtn").addEventListener("click", () => {
   const name = $("docName").value.trim(); $("genErr").textContent = "";
   if (!name) { $("genErr").textContent = "Isi nama psikolog dulu."; return; }
