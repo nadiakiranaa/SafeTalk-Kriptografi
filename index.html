@@ -198,7 +198,7 @@ function genKeys(bits) {
   const e = 65537n;
   for (;;) {
     const p = genPrime(bits / 2), q = genPrime(bits / 2);
-    if (p === q) continue; # agar p dan q benar2 berbeda
+    if (p === q) continue; // agar p dan q benar-benar berbeda
     const phi = (p - 1n) * (q - 1n);
     if (gcd(e, phi) !== 1n) continue;
     const n = p * q;
@@ -219,19 +219,19 @@ function unpad(blk) {
   return blk.slice(i + 1);
 }
 // ========================= RSA 4. ENKRIPSI DAN DEKRIPSI =========================
-function encrypt(text, pub) {
-  const k = byteLen(pub.n), size = k - 11, data = new TextEncoder().encode(text), out = [];
+function encrypt(text, pub) { // pub = kunci publik
+  const k = byteLen(pub.n), size = k - 11, data = new TextEncoder().encode(text), out = []; // max blok pesan k-11, text diubah ke bytes
   for (let i = 0; i < data.length; i += size) out.push(toHex(bigToBytes(modPow(bytesToBig(pad(data.slice(i, i + size), k)), pub.e, pub.n), k)));
-  return out.join(".");
+  return out.join("."); // implementasi c = m^e mod n, hasilnya diubah ke hex, tiap blok dipisah titik
 }
-function decrypt(str, key) {
-  const k = byteLen(key.n), parts = str.split(".").map(h => unpad(bigToBytes(modPow(bytesToBig(fromHex(h)), key.d, key.n), k)));
-  const all = new Uint8Array(parts.reduce((s, p) => s + p.length, 0)); let o = 0; for (const p of parts) { all.set(p, o); o += p.length; }
-  return new TextDecoder().decode(all);
+function decrypt(str, key) { // key = kunci privat
+  const k = byteLen(key.n), parts = str.split(".").map(h => unpad(bigToBytes(modPow(bytesToBig(fromHex(h)), key.d, key.n), k))); // ciphertext dibagi per blok
+  const all = new Uint8Array(parts.reduce((s, p) => s + p.length, 0)); let o = 0; for (const p of parts) { all.set(p, o); o += p.length; } // m = c^d mod n
+  return new TextDecoder().decode(all); // semua blok digabung dan dikembalikan ke teks asli
 }
 
 const $ = id => document.getElementById(id);
-const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const K = k => ({ n: k.n.toString(), e: k.e.toString(), d: k.d.toString() });
 const B = k => ({ n: BigInt(k.n), e: BigInt(k.e), d: BigInt(k.d) });
 let PSY = [], ME = null, MSGS = [], OPEN = {};   // teks asli hanya di memori, tidak disimpan
@@ -258,9 +258,9 @@ function refresh() {
 // ========================= RSA 5. DEMO VISUAL UNTUK PRESENTASI =========================
 function renderRsaDemo() {
   const key = genKeys(512);
-  const m = 123456789n;
-  const c = modPow(m, key.e, key.n);
-  const decrypted = modPow(c, key.d, key.n);
+  const m = 123456789n; // pesan asli angka
+  const c = modPow(m, key.e, key.n); // enkripsi c = m^e mod n, hasil enkripsi
+  const decrypted = modPow(c, key.d, key.n); // dekripsi m = c^d mod n, hasil dekripsi
   const out = `
     <div class="rsa-step"><h3>1. Pembangkitan kunci</h3><code>p = ${key.p}
 q = ${key.q}
