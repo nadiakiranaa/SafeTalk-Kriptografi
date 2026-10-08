@@ -189,14 +189,16 @@ function isPrime(n, rounds = 24) {
   }
   return true;
 }
+// ========================= RSA 1. PEMBANGKITAN BILANGAN PRIMA =========================
 function genPrime(bits) {
   for (;;) { const c = randBits(bits) | (1n << BigInt(bits - 1)) | (1n << BigInt(bits - 2)) | 1n; if (isPrime(c)) return c; }
 }
+// ========================= RSA 2. PEMBANGKITAN KUNCI PUBLIK & PRIVAT =========================
 function genKeys(bits) {
   const e = 65537n;
   for (;;) {
     const p = genPrime(bits / 2), q = genPrime(bits / 2);
-    if (p === q) continue;
+    if (p === q) continue; # agar p dan q benar2 berbeda
     const phi = (p - 1n) * (q - 1n);
     if (gcd(e, phi) !== 1n) continue;
     const n = p * q;
@@ -204,6 +206,7 @@ function genKeys(bits) {
     return { p, q, n, phi, e, d: modInv(e, phi), bits };
   }
 }
+// ========================= RSA 3. PADDING DAN PEMBAGIAN BLOK PESAN =========================
 function pad(chunk, k) {
   const ps = new Uint8Array(k - 3 - chunk.length);
   for (let i = 0; i < ps.length; i++) { let b = 0; while (!b) b = randBytes(1)[0]; ps[i] = b; }
@@ -215,6 +218,7 @@ function unpad(blk) {
   if (i >= blk.length) throw new Error("Padding tidak valid.");
   return blk.slice(i + 1);
 }
+// ========================= RSA 4. ENKRIPSI DAN DEKRIPSI =========================
 function encrypt(text, pub) {
   const k = byteLen(pub.n), size = k - 11, data = new TextEncoder().encode(text), out = [];
   for (let i = 0; i < data.length; i += size) out.push(toHex(bigToBytes(modPow(bytesToBig(pad(data.slice(i, i + size), k)), pub.e, pub.n), k)));
@@ -251,6 +255,7 @@ function refresh() {
   $("psyList").innerHTML = PSY.map(p => `<div class="msg"><b>${esc(p.name)}</b> <span class="tag pub">Enkripsi RSA aktif</span><span class="tag priv">Kunci privat hanya milik ${esc(p.name)}</span></div>`).join("");
   renderMine(); renderInbox();
 }
+// ========================= RSA 5. DEMO VISUAL UNTUK PRESENTASI =========================
 function renderRsaDemo() {
   const key = genKeys(512);
   const m = 123456789n;
